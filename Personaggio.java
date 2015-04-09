@@ -7,22 +7,24 @@ enum RisultatoAttacco{
 	maldestro
 }
 
-/*** Author Kae ***/
+/*** @author Kae ***/
 public class Personaggio {
-    private String   Nome;
-    private Classe   Clas;
-    private int      Livello;
-    private Profilo  Profi;
-    private int      MaxFerite;
-    private int      PuntiFerita;
-    private Armatura Armatura;
-    private int      ClasseArmatura;
-    private int      BonusAttaccoBase;
-    private int      BonusManovraCombattimento;
-    private int      DifesaManovraCombattimento;
-    private int      Tempra;
-    private int      Riflessi;
-    private int      Volonta;
+    private String       Nome;
+    private Classe       Clas;
+    private int          Livello;
+    private Profilo      Profi;
+    private int          MaxFerite;
+    private int          PuntiFerita;
+    private Armatura     Armatura;
+    private Arma         Arma;
+    private Rastrelliera Armi;
+    private int          ClasseArmatura;
+    private int          BonusAttaccoBase;
+    private int          BonusManovraCombattimento;
+    private int          DifesaManovraCombattimento;
+    private int          Tempra;
+    private int          Riflessi;
+    private int          Volonta;
     
     // ---------------- //
     
@@ -48,6 +50,12 @@ public class Personaggio {
         else
             dest = Profi.Bonus(Profi.getDestrezza());
         this.ClasseArmatura = 10+(Armatura.getValoreArmatura())+dest;
+        // elenco delle armi
+        this.Armi  = new Rastrelliera();
+        Dado dado  = new Dado (3);
+        Arma pugno = new Arma("pugno", dado, 20, 2, 1, 0); // l'arma iniziale è il pugno
+        Armi.setArma(pugno, 0); 
+        this.Arma  = Armi.getArma(0); // equipaggia il pugno come arma in uso
         
         // valori derivati del personaggio
         this.BonusAttaccoBase           = classe.getModAttacco(livello);
@@ -147,6 +155,28 @@ public class Personaggio {
         return tot;
     }
 
+    // comandi delle Armi
+    public void postozero (int posto) throws ErroriRastrelliera { //dà errore se si cerca di disequipaggiare il pugno
+        if (posto == 0) throw new ErroriRastrelliera();
+    }
+    public String getArma (int posto) {
+        return Armi.getArma(posto).ProfiloArma();
+    }
+    public void riponiArma (Arma arma, int posto) { // mette un arma nella rastrelliera
+        try {
+            postozero(posto);
+        }catch(personaggio.ErroriRastrelliera exception) {
+            System.out.println(exception.postozero());
+        }
+        Armi.setArma(arma, posto);
+    }
+    public void EquipaggiaArma (int posto) {
+        Arma arma = Armi.getArma(posto);
+        Arma      = arma;
+    }
+    public void EquipaggiaArma (Arma arma) {
+        Arma = arma;
+    }
     // gestione ferite 
     public int getPuntiFerita () {
         return PuntiFerita;
